@@ -3,9 +3,6 @@
 
 #include <unistd.h>
 #include <stdint.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
 
 typedef struct {
     const size_t sz;
@@ -20,8 +17,8 @@ typedef enum {
     READWRITE
 } open_mode_t;
 
-//mapped_file_t map_file_create(const char *file_name,
-//                              const size_t size);
+mapped_file_t map_file_create(const char *file_name,
+                              const size_t size);
 
 mapped_file_t map_file_open(const char *file_name,
                             const open_mode_t open_mode);

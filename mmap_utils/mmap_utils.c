@@ -1,5 +1,29 @@
 #include "mmap_utils.h"
 
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+
+mapped_file_t map_file_create(const char *file_name,
+                              const size_t size) {
+
+    int fd = open(file_name, O_RDWR | O_CREAT, (mode_t)0644);
+    ftruncate(fd, size);
+    int64_t pagesize = sysconf(_SC_PAGE_SIZE);
+    int64_t sz_aligned = size + pagesize - (size % pagesize);
+    uint8_t *mmapPtr = mmap(0, sz_aligned, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+
+    mapped_file_t mf = {
+        .sz = size,
+        .dat = mmapPtr,
+        .sz_aligned = sz_aligned,
+        .file_name = file_name,
+        .fd = fd
+    };
+
+    return mf;
+}
+
 mapped_file_t map_file_open(const char *file_name,
                             const open_mode_t open_mode) {
 
@@ -39,10 +63,3 @@ void map_file_close(const mapped_file_t mf) {
   close(mf.fd);
 }
 
-
-int main(int argc, char** argv) {
-    mapped_file_t mf = map_file_open(argv[1], READ); 
-    mf.dat[1] = 65;
-    map_file_close(mf);
-    return 0;
-}
