@@ -21,7 +21,11 @@ typedef struct {
     int32_t start;
     uint32_t end;
 
-    void (*word_func)(const size_t, const uint8_t*);
+    void *state;
+
+    void (*word_func)(void *state,
+                      const size_t,
+                      const uint8_t*);
 
 } machine_t;
 
@@ -37,7 +41,9 @@ static inline void inner_loop(machine_t *m) {
         }
 
         uint64_t position_in_file = m->chunk_offset + m->start;
-        (*m->word_func)(m->end - m->start, m->text + position_in_file);
+        (*m->word_func)(m->state,
+                        m->end - m->start,
+                        m->text + position_in_file);
     }
 }
 
@@ -67,7 +73,10 @@ static void outer_loop(machine_t *m) {
 
 void apply_to_words(const size_t sz,
                     const uint8_t *data,
-                    void (*word_func)(const size_t, const uint8_t*)) {
+                    void *state,
+                    void (*word_func)(void *state,
+                                      const size_t,
+                                      const uint8_t*)) {
     machine_t m;
     m.max_chunk_size = 2 * 1024 * 1024;
     m.locale = "";
@@ -78,6 +87,7 @@ void apply_to_words(const size_t sz,
     m.chunk_offset = 0;
     m.start = 0;
     m.end = 0;
+    m.state = state;
     m.word_func = word_func;
     outer_loop(&m);
     utext_close(m.utf);
