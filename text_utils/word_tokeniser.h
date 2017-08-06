@@ -13,7 +13,10 @@
  * being 0-terminated.                      */
 void apply_to_words(const size_t sz,
                     const uint8_t *data,
-                    void (*word_func)(const size_t, const uint8_t*));
+                    void *state,
+                    void (*word_func)(void *state,
+                                      const size_t,
+                                      const uint8_t*));
 
 #endif
 
