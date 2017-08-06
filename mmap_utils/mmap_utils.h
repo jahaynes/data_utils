@@ -15,7 +15,12 @@ typedef struct {
     const int fd;
 } mapped_file_t;
 
-mapped_file_t map_file_open(const char *file_name);
+typedef enum {
+    READ,
+    READWRITE
+} open_mode_t;
+
+mapped_file_t map_file_open(const char *file_name, open_mode_t open_mode);
 
 void map_file_close(const mapped_file_t mf);
 

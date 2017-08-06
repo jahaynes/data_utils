@@ -25,3 +25,8 @@ void map_file_close(const mapped_file_t mf) {
   munmap(mf.dat, mf.sz_aligned);
   close(mf.fd);
 }
+
+
+int main(int argc, char** argv) {
+    return 0;
+}
