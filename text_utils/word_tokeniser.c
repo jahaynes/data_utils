@@ -1,6 +1,7 @@
 #include "word_tokeniser.h"
 
 #include <unicode/ubrk.h>
+#include <unicode/uclean.h>
 #include <stdbool.h>
 
 typedef struct {
